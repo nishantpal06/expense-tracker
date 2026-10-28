@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Expense Tracker</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <h1>Expense Tracker</h1>
+      <div class="topbar-actions">
+        <a class="btn ghost" href="/api/export.csv">Export CSV</a>
+        <label class="btn ghost" for="import-file">Import CSV</label>
+        <input type="file" id="import-file" accept=".csv,text/csv" hidden>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="filters card">
+      <label>Month
+        <input type="month" id="filter-month">
+      </label>
+      <button class="btn ghost" id="clear-month" type="button">All time</button>
+      <label>Category
+        <select id="filter-category"><option value="">All categories</option></select>
+      </label>
+    </section>
+
+    <section class="stats">
+      <div class="card stat"><span class="stat-label">Total spent</span><span class="stat-value" id="stat-total">0.00</span></div>
+      <div class="card stat"><span class="stat-label">Transactions</span><span class="stat-value" id="stat-count">0</span></div>
+      <div class="card stat"><span class="stat-label">Top category</span><span class="stat-value" id="stat-top">&ndash;</span></div>
+    </section>
+
+    <div class="grid">
+      <section class="card">
+        <h2>Add expense</h2>
+        <form id="add-form" class="form">
+          <label>Amount
+            <input name="amount" inputmode="decimal" placeholder="0.00" required autocomplete="off">
+          </label>
+          <label>Category
+            <input name="category" list="category-list" placeholder="food, travel..." required autocomplete="off">
+            <datalist id="category-list"></datalist>
+          </label>
+          <label>Date
+            <input name="date" type="date" value="{{ today }}" required>
+          </label>
+          <label>Note
+            <input name="note" placeholder="Optional" autocomplete="off">
+          </label>
+          <button class="btn primary" type="submit">Add expense</button>
+        </form>
+      </section>
+
+      <section class="card">
+        <h2>Budgets <small id="budget-month"></small></h2>
+        <div id="budget-list" class="budgets"></div>
+        <form id="budget-form" class="form inline">
+          <input name="category" placeholder="Category" required autocomplete="off" list="category-list">
+          <input name="amount" inputmode="decimal" placeholder="Monthly limit" required autocomplete="off">
+          <button class="btn" type="submit">Set budget</button>
+        </form>
+      </section>
+    </div>
+
+    <div class="grid">
+      <section class="card">
+        <h2>By category</h2>
+        <div id="summary-list" class="bars"></div>
+      </section>
+      <section class="card">
+        <h2>Monthly totals</h2>
+        <div id="months-list" class="bars"></div>
+      </section>
+    </div>
+
+    <section class="card">
+      <h2>Expenses</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Category</th><th>Note</th><th class="num">Amount</th><th></th></tr>
+          </thead>
+          <tbody id="expense-rows"></tbody>
+        </table>
+      </div>
+      <p class="empty" id="expense-empty" hidden>No expenses yet for this view.</p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
